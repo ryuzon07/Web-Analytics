@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"embed" // <-- Keep
+	"embed"
 	"io/fs"
 	"log"
-	"net/http" // <-- Keep
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
