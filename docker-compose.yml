@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.3
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.3
+    hostname: kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432" # Exposed for optional local inspection
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=analytics
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d analytics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrator:
+    # This uses a standard migrate image, mounting our local migration
+    image: migrate/migrate:v4.17.0
+    container_name: migrator
+    volumes:
+      - ./db/migration:/migrations
+    # The command for the migrator to run
+    command: ["-path", "/migrations", "-database", "postgres://admin:secret@postgres:5432/analytics?sslmode=disable", "up"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  api:
+    build:
+      context: . # Build context is the root directory
+      dockerfile: api/Dockerfile
+    container_name: api-service
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_ENV=development
+      - KAFKA_BROKER_URLS=kafka:29092
+      - KAFKA_TOPIC=events
+      - DATABASE_URL=postgres://admin:secret@postgres:5432/analytics?sslmode=disable
+    depends_on:
+      - kafka
+      - migrator
+
+  processor:
+    build:
+      context: .
+      dockerfile: processor/Dockerfile
+    container_name: processor-service
+    environment:
+      - APP_ENV=development
+      - KAFKA_BROKER_URLS=kafka:29092
+      - KAFKA_TOPIC=events
+      - KAFKA_GROUP_ID=processor-group
+      - DATABASE_URL=postgres://admin:secret@postgres:5432/analytics?sslmode=disable
+    depends_on:
+      - kafka
+      - migrator
+    restart: always
