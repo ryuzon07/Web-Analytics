@@ -1,4 +1,4 @@
-# Web Analytics Platform
+## Web Analytics Platform
 
 A multi-service real-time analytics platform built with Go, featuring event ingestion, asynchronous processing, and a web dashboard.
 
