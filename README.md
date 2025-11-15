@@ -232,6 +232,5 @@ docker-compose up --build
 
 ## Author
 
-Benny Anthony Mariyapnoor
-Created as a learning project for building microservices with Go.
+Benny Anthony Mariyapnoor.
 
