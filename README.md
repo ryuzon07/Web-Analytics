@@ -1,8 +1,8 @@
-# Go Analytics Platform
+# Web Analytics Platform
 
 A multi-service real-time analytics platform built with Go, featuring event ingestion, asynchronous processing, and a web dashboard.
 
-## 🏗️ Architecture
+## Architecture
 
 This project implements a microservices architecture with:
 
@@ -12,7 +12,7 @@ This project implements a microservices architecture with:
 - **PostgreSQL**: Persistent storage for analytics events
 - **Web Dashboard**: Real-time analytics visualization
 
-## 🚀 Technologies
+## Technologies
 
 - **Go 1.23.4**
 - **Gin** - HTTP web framework
@@ -21,10 +21,10 @@ This project implements a microservices architecture with:
 - **sqlc** - Type-safe SQL query generator
 - **Docker & Docker Compose** - Containerization
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-go-analytics/
+Web-analytics/
 ├── api/                      # API service
 │   ├── handler.go           # HTTP handlers
 │   ├── main.go              # API server entry point
@@ -44,7 +44,7 @@ go-analytics/
 └── go.mod                   # Go module dependencies
 ```
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 
@@ -69,7 +69,7 @@ go-analytics/
    - API: http://localhost:8080/events (POST)
    - Stats: http://localhost:8080/stats (GET)
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### POST `/events` - Ingest Event
 Send analytics events to the platform.
@@ -124,7 +124,7 @@ GET /stats?site_id=site-abc-123&date=2025-11-15
 }
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Using Postman
 
@@ -152,7 +152,7 @@ Invoke-RestMethod -Uri "http://localhost:8080/events" -Method POST -Body $body -
 Invoke-RestMethod -Uri "http://localhost:8080/stats?site_id=site-abc-123&date=2025-11-15"
 ```
 
-## 🔧 Local Development
+## Local Development
 
 ### Run Infrastructure Only
 
@@ -179,7 +179,7 @@ go run ./api
 go run ./processor
 ```
 
-## 🗄️ Database Schema
+## Database Schema
 
 ```sql
 CREATE TABLE "events" (
@@ -197,18 +197,18 @@ CREATE TABLE "events" (
 - `idx_events_user_id`
 - `idx_events_site_id_event_type_timestamp`
 
-## 📈 Features
+## Features
 
-- ✅ Real-time event ingestion via REST API
-- ✅ Asynchronous event processing with Kafka
-- ✅ Type-safe database queries with sqlc
-- ✅ Aggregated analytics (total views, unique users, top paths)
-- ✅ Web-based dashboard for data visualization
-- ✅ Dockerized microservices architecture
-- ✅ Database migrations support
-- ✅ Production-ready error handling
+-  Real-time event ingestion via REST API
+-  Asynchronous event processing with Kafka
+-  Type-safe database queries with sqlc
+-  Aggregated analytics (total views, unique users, top paths)
+-  Web-based dashboard for data visualization
+-  Dockerized microservices architecture
+-  Database migrations support
+-  Production-ready error handling
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Check Service Logs
 
@@ -230,14 +230,8 @@ docker-compose down -v
 docker-compose up --build
 ```
 
-## 📝 License
+## Author
 
-MIT License - feel free to use this project for learning and development.
-
-## 👤 Author
-
+Benny Anthony Mariyapnoor
 Created as a learning project for building microservices with Go.
 
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
